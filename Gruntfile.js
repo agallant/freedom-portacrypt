@@ -34,6 +34,28 @@ module.exports = function(grunt) {
       }
     },
 
+    karma: {
+      options: {
+        configFile: 'karma.conf.js'
+      },
+      browsers: {
+        singleRun: true,
+        autoWatch: false
+      },
+      watch: {
+        singleRun: false,
+        autoWatch: true,
+        reporters: ['progress', 'story'],
+        preprocessors: {},
+        coverageReporter: {}
+      },
+      phantom: {
+        browsers: ['PhantomJS'],
+        singleRun: true,
+        autoWatch: false
+      }
+    },
+
     // TODO make demo work in other freedom flavors (Chrome/FF/Node)
     connect: {
       demo: {
@@ -57,6 +79,10 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'jshint',
     'copy'
+  ]);
+  grunt.registerTask('test', [
+    'build',
+    'karma'
   ]);
   grunt.registerTask('demo', [
     'build',
