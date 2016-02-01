@@ -1,23 +1,65 @@
 {
-  "name": "Counter",
-  "description": "Counter Sample freedom.js application",
-  "app": {
-    "script": "freedom-module.js",
-    "index": "index.html",
-    "static": [ "../style.css" ]
-  },
-  "provides": ["counter"],
-  "default": "counter",
+  "name": "PortaCrypt",
+  "description": "Portable passphrase-based asymmetric crypto using NaCl",
+  "provides" : [
+    "portacrypt"
+  ],
+  "default": "portacrypt",
   "api": {
-    "counter": {
-      "constructor": {
-        "value": ["number"]
-      },
-      "click": {
+    "portacrypt": {
+      "_comment": "Passphrase-based cryptography interface",
+
+      "ERRCODE": { "type": "constant", "value": {
+        "KEYS_NOT_CREATED":   "No keys in memory - initialize first",
+        "SHORT_PASSPHRASE":   "Please use a longer passphrase",
+        "ALREADY_SETUP":      "Keypair already in memory, please clear first",
+        "BAD_AUTHENTICATION": "Message authentication failed"
+      }},
+
+      "setup": {
+        "_comment": "Create a keypair based on passphrase",
         "type": "method",
-        "value": ["number"],
-        "ret": "number"
-      }
+        "value": ["string"],
+        "ret": [],
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "clear": {
+        "_comment": "Clear keypair from memory",
+        "type": "method",
+        "value": [],
+        "ret": [],
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "exportKey": {
+        "_comment": "Export public key",
+        "type": "method",
+        "value": [],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "box": {
+        "_comment": "Encrypt and authenticate message",
+        "type": "method",
+        "value": ["string", "string", "boolean"],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "open": {
+        "_comment": "Decrypt and authenticate message",
+        "type": "method",
+        "value": ["string", "string"],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      },
     }
-  }
+  },
+
+  "permissions": [
+    "core.crypto",
+    "core.storage"
+  ]
 }
