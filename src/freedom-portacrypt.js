@@ -1,20 +1,17 @@
-/* globals freedom */
-/**
- * This is the root module of freedom.js.
- * It runs in an isolated thread with its own namespace.
- * The root module has a special object 'freedom', which
- * is used to provide the interface defined in
- * freedom-module.json.
- **/
-var Counter = function (dispatchEvents, base) {
+/* globals freedom,Promise */
+
+var Portacrypt = function (dispatchEvents, base) {
   'use strict';
   this.num = base;
 };
 
-Counter.prototype.click = function (num) {
+Portacrypt.prototype.setup = function (passphrase) {
   'use strict';
-  this.num += num;
-  return this.num;
+  if (passphrase.length < 8) {
+    return Promise.reject(Error('Please use a longer passphrase'));
+  }
 };
 
-freedom().provideSynchronous(Counter);
+if (typeof freedom !== 'undefined') {
+  freedom().providePromises(Portacrypt);
+}

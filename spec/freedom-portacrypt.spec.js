@@ -1,9 +1,11 @@
-/*globals describe, beforeEach, require, expect, it*/
+/*globals describe, beforeEach, require, expect, it, console, Portacrypt*/
 /*jslint indent:2*/
 
 // Unit tests for freedom-portacrypt
 // Tests both freedom API calls and internal methods
 describe('portacrypt', function () {
+  'use strict';
+
   var publicKeyStr =
       '-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n' +
       'Charset: UTF-8\r\n' +

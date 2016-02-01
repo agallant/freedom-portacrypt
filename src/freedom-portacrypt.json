@@ -1,6 +1,6 @@
 {
   "name": "PortaCrypt",
-  "description": "Portable passphrase-based asymmetric crypto using NaCl",
+  "description": "Passphrase based asymmetric crypto using scrypt and NaCl",
   "provides" : [
     "portacrypt"
   ],
