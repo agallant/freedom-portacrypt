@@ -1,6 +1,12 @@
 {
   "name": "PortaCrypt",
   "description": "Passphrase based asymmetric crypto using scrypt and NaCl",
+  "app": {
+    "script": [
+      "scrypt-async.js",
+      "nacl-fast.js"
+    ]
+  },
   "provides" : [
     "portacrypt"
   ],

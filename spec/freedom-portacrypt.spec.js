@@ -69,7 +69,7 @@ describe('portacrypt', function () {
   });
 
   it('rejects short passphrase', function(done) {
-    portacrypt.setup('test').then(
+    portacrypt.setup('short passphrase').then(
       function() {
         console.log(portacrypt);  // shouldn't see this, should go to error case
         expect(false).toBeTruthy();
@@ -78,4 +78,11 @@ describe('portacrypt', function () {
       }).then(done);
   });
 
+  it('sets up and exports public key', function(done) {
+    portacrypt.setup('adequately long passphrase').then(function() {
+      var publicKey = portacrypt.exportKey();
+      expect(publicKey).toBeDefined();
+      expect(publicKey.byteLength).toEqual(32);
+    }).then(done);
+  });
 });
