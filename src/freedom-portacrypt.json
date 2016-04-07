@@ -5,6 +5,7 @@
     "script": [
       "scrypt-async.js",
       "nacl-fast.js"
+      "nacl-util.js"
     ]
   },
   "provides" : [
@@ -49,13 +50,13 @@
       "box": {
         "_comment": "Encrypt and authenticate message",
         "type": "method",
-        "value": ["string", "string", "boolean"],
+        "value": ["string", "string"],
         "ret": "string",
         "err": { "errcode": "string", "message": "string" }
       },
 
       "open": {
-        "_comment": "Decrypt and authenticate message",
+        "_comment": "Authenticate and decrypt message",
         "type": "method",
         "value": ["string", "string"],
         "ret": "string",

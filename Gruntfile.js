@@ -42,6 +42,14 @@ module.exports = function(grunt) {
         filter: 'isFile',
         expand: true,
         onlyIf: 'modified'
+      },
+      tweetnaclUtil: {
+        src: [require.resolve('tweetnacl-util')],
+        dest: 'build/',
+        flatten: true,
+        filter: 'isFile',
+        expand: true,
+        onlyIf: 'modified'
       }
     },
 

@@ -1,6 +1,7 @@
 /* globals freedom,Promise,console,scrypt,nacl */
 
 // Array of random bytes drawn with nacl.randomBytes(32)
+// TODO - at least use a source of publicly verifiable entropy (e.g. blockchain)
 var salt = [213, 159, 245, 205, 103, 58, 73, 63,
             114, 93, 140, 125, 154, 1, 127, 25,
             6, 69, 222, 58, 238, 107, 154, 132,
@@ -40,7 +41,7 @@ Portacrypt.prototype.exportKey = function() {
   if (!this.keypair) {
     throw new Error('No keys in memory - initialize first');
   }
-  return this.keypair.publicKey;
+  return nacl.util.encodeBase64(this.keypair.publicKey);
 };
 
 Portacrypt.prototype.box = function(message, receiverKey) {
@@ -48,13 +49,27 @@ Portacrypt.prototype.box = function(message, receiverKey) {
   if (!this.keypair) {
     throw new Error('No keys in memory - initialize first');
   }
+  // TODO randomness
+  var nonce64 = 'plYu7rLW8pagaZxPJolmtacUg1+QcURx';
+  var nonce = nacl.util.decodeBase64(nonce64);
+  var box = nacl.box(nacl.util.decodeBase64(btoa(message)), nonce,
+                     nacl.util.decodeBase64(receiverKey),
+                     this.keypair.secretKey);
+  return nacl.util.encodeBase64(box);
 };
 
-Portacrypt.prototype.open = function(ciphertext, senderKey) {
+Portacrypt.prototype.open = function(box, senderKey) {
   'use strict';
   if (!this.keypair) {
     throw new Error('No keys in memory - initialize first');
   }
+  // TODO randomness
+  var nonce64 = 'plYu7rLW8pagaZxPJolmtacUg1+QcURx';
+  var nonce = nacl.util.decodeBase64(nonce64);
+  var message = nacl.box.open(nacl.util.decodeBase64(box), nonce,
+                              nacl.util.decodeBase64(senderKey),
+                              this.keypair.secretKey);
+  return atob(nacl.util.encodeBase64(message));
 };
 
 if (typeof freedom !== 'undefined') {
