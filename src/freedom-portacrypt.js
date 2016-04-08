@@ -48,13 +48,11 @@ Portacrypt.prototype.box = function(message, receiverKey) {
   if (!this.keypair) {
     throw new Error('No keys in memory - initialize first');
   }
-  // TODO randomness
-  var nonce64 = 'plYu7rLW8pagaZxPJolmtacUg1+QcURx';
-  var nonce = nacl.util.decodeBase64(nonce64);
+  var nonce = nacl.randomBytes(nacl.box.nonceLength);
   var box = nacl.box(nacl.util.decodeBase64(btoa(message)), nonce,
                      nacl.util.decodeBase64(receiverKey),
                      this.keypair.secretKey);
-  return nacl.util.encodeBase64(box);
+  return nacl.util.encodeBase64(nonce) + nacl.util.encodeBase64(box);
 };
 
 Portacrypt.prototype.open = function(box, senderKey) {
@@ -62,12 +60,11 @@ Portacrypt.prototype.open = function(box, senderKey) {
   if (!this.keypair) {
     throw new Error('No keys in memory - initialize first');
   }
-  // TODO randomness
-  var nonce64 = 'plYu7rLW8pagaZxPJolmtacUg1+QcURx';
-  var nonce = nacl.util.decodeBase64(nonce64);
-  var message = nacl.box.open(nacl.util.decodeBase64(box), nonce,
-                              nacl.util.decodeBase64(senderKey),
-                              this.keypair.secretKey);
+  var bytes = nacl.util.decodeBase64(box);
+  var message = nacl.box.open(
+    bytes.subarray(nacl.box.nonceLength),
+    bytes.subarray(0, nacl.box.nonceLength),
+    nacl.util.decodeBase64(senderKey), this.keypair.secretKey);
   return atob(nacl.util.encodeBase64(message));
 };
 
