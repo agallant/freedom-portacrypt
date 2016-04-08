@@ -6,8 +6,9 @@
 describe('portacrypt', function () {
   'use strict';
 
-  var publicKeyStr = '0yfw/oz/iMzQ5+xX0DYTsonpbuVSL+Q4PRSoNGwIDXM=';
-  var privateKeyStr = 'GjjXzS/hKQpw1NhgM2VgtfgAAITmww4tJHCjzayBRtk=';
+  // keypair for userid 'user', passphrase 'adequately long passphrase'
+  var publicKeyStr = '0WUHYeKUR29yhPUNeshz84He7sWWuZCn0DlgF5wCUF0=';
+  var secretKeyStr = 'Sdwp2yQVEtUZh3fn9RLAtbn0DVKd7Wd7OUhMiZJG2RI=';
   var portacrypt;
 
   beforeEach(function () {
@@ -16,17 +17,48 @@ describe('portacrypt', function () {
   });
 
   it('rejects short passphrase', function(done) {
-    portacrypt.setup('short passphrase').then(
-      function() {
-        console.log(portacrypt);  // shouldn't see this, should go to error case
-        expect(false).toBeTruthy();
-      }).catch(function(e) {
-        expect(e).toEqual(Error('Please use a longer passphrase'));
-      }).then(done);
+    portacrypt.setup('user', 'short passphrase').then(function() {
+      console.log(portacrypt);  // shouldn't see this, should go to error case
+      expect(false).toBeTruthy();
+    }).catch(function(e) {
+      expect(e).toEqual(Error('Please use a longer passphrase'));
+    }).then(done);
+  });
+
+  it('rejects blank userid', function(done) {
+    portacrypt.setup('', 'adequately long passphrase').then(function() {
+      console.log(portacrypt);  // shouldn't see this, should go to error case
+      expect(false).toBeTruthy();
+    }).catch(function(e) {
+      expect(e).toEqual(Error('Please specify a userid'));
+    }).then(done);
   });
 
   it('sets up and exports public key', function(done) {
-    portacrypt.setup('adequately long passphrase').then(function() {
+    portacrypt.setup('user', 'adequately long passphrase').then(function() {
+      var publicKey = portacrypt.exportKey();
+      expect(publicKey).toBeDefined();
+      expect(typeof publicKey).toEqual('string');
+      expect(publicKey).toEqual(publicKeyStr);
+    }).then(done);
+  });
+
+  it('rejects setting up twice without clearing', function(done) {
+    portacrypt.setup('user', 'adequately long passphrase').then(function() {
+      return portacrypt.setup('anotheruser', 'another long passphrase');
+    }).then(function() {
+      console.log(portacrypt);  //shouldn't see this, should go to error case
+      expect(false).toBeTruthy();
+    }).catch(function(e) {
+      expect(e).toEqual(Error('Keypair already in memory, please clear first'));
+    }).then(done);
+  });
+
+  it('sets up twice successfully *if* clear called between', function(done) {
+    portacrypt.setup('user', 'adequately long passphrase').then(function() {
+      portacrypt.clear();
+      return portacrypt.setup('user', 'adequately long passphrase');
+    }).then(function() {
       var publicKey = portacrypt.exportKey();
       expect(publicKey).toBeDefined();
       expect(typeof publicKey).toEqual('string');
@@ -35,7 +67,7 @@ describe('portacrypt', function () {
   });
 
   it('encrypts/signs and verifies/decrypts message', function(done) {
-    portacrypt.setup('adequately long passphrase').then(function() {
+    portacrypt.setup('user', 'adequately long passphrase').then(function() {
       var publicKey = portacrypt.exportKey();
       var box = portacrypt.box('test message', publicKey);
       expect(box).toBeDefined();

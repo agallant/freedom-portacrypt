@@ -4,7 +4,7 @@
   "app": {
     "script": [
       "scrypt-async.js",
-      "nacl-fast.js"
+      "nacl-fast.js",
       "nacl-util.js"
     ]
   },
@@ -24,9 +24,9 @@
       }},
 
       "setup": {
-        "_comment": "Create a keypair based on passphrase",
+        "_comment": "Create a keypair based on userid and passphrase",
         "type": "method",
-        "value": ["string"],
+        "value": ["string", "string"],
         "ret": [],
         "err": { "errcode": "string", "message": "string" }
       },
