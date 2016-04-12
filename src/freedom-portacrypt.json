@@ -5,7 +5,8 @@
     "script": [
       "scrypt-async.js",
       "nacl-fast.js",
-      "nacl-util.js"
+      "nacl-util.js",
+      "freedom-portacrypt.js"
     ]
   },
   "provides" : [
@@ -19,6 +20,7 @@
       "ERRCODE": { "type": "constant", "value": {
         "KEYS_NOT_CREATED":   "No keys in memory - initialize first",
         "SHORT_PASSPHRASE":   "Please use a longer passphrase",
+        "NO_USERID":          "Please specify a userid",
         "ALREADY_SETUP":      "Keypair already in memory, please clear first",
         "BAD_AUTHENTICATION": "Message authentication failed"
       }},
@@ -61,12 +63,7 @@
         "value": ["string", "string"],
         "ret": "string",
         "err": { "errcode": "string", "message": "string" }
-      },
+      }
     }
-  },
-
-  "permissions": [
-    "core.crypto",
-    "core.storage"
-  ]
+  }
 }

@@ -1,4 +1,4 @@
-/*globals describe,beforeEach,require,expect,it,xit,jit,console,Portacrypt*/
+/*globals Promise,describe,beforeEach,done,expect,it,xit,jit,console,Portacrypt*/
 /*jslint indent:2*/
 
 // Unit tests for freedom-portacrypt
@@ -6,14 +6,22 @@
 describe('portacrypt', function () {
   'use strict';
 
-  // keypair for userid 'user', passphrase 'adequately long passphrase'
+  // public key for userid 'user', passphrase 'adequately long passphrase'
   var publicKeyStr = '0WUHYeKUR29yhPUNeshz84He7sWWuZCn0DlgF5wCUF0=';
-  var secretKeyStr = 'Sdwp2yQVEtUZh3fn9RLAtbn0DVKd7Wd7OUhMiZJG2RI=';
   var portacrypt;
 
   beforeEach(function () {
     portacrypt = new Portacrypt();
     expect(portacrypt).toBeDefined();
+  });
+
+  it('throws error if exporting key before setting up', function(done) {
+    portacrypt.exportKey().then(function() {
+      console.log(portacrypt);  // shouldn't see this, should go to error case
+      expect(false).toBeTruthy();
+    }).catch(function(e) {
+      expect(e).toEqual(Error('No keys in memory - initialize first'));
+    }).then(done);
   });
 
   it('rejects short passphrase', function(done) {
@@ -36,10 +44,14 @@ describe('portacrypt', function () {
 
   it('sets up and exports public key', function(done) {
     portacrypt.setup('user', 'adequately long passphrase').then(function() {
-      var publicKey = portacrypt.exportKey();
+      return portacrypt.exportKey();
+    }).then(function(publicKey) {
       expect(publicKey).toBeDefined();
       expect(typeof publicKey).toEqual('string');
       expect(publicKey).toEqual(publicKeyStr);
+    }).catch(function(e) {
+      console.log(e.toString());
+      expect(false).toBeTruthy();
     }).then(done);
   });
 
@@ -56,24 +68,38 @@ describe('portacrypt', function () {
 
   it('sets up twice successfully *if* clear called between', function(done) {
     portacrypt.setup('user', 'adequately long passphrase').then(function() {
-      portacrypt.clear();
+      return portacrypt.clear();
+    }).then(function() {
       return portacrypt.setup('user', 'adequately long passphrase');
     }).then(function() {
-      var publicKey = portacrypt.exportKey();
+      return portacrypt.exportKey();
+    }).then(function(publicKey) {
       expect(publicKey).toBeDefined();
       expect(typeof publicKey).toEqual('string');
       expect(publicKey).toEqual(publicKeyStr);
+    }).catch(function(e) {
+      console.log(e.toString());
+      expect(false).toBeTruthy();
     }).then(done);
   });
 
   it('encrypts/signs and verifies/decrypts message', function(done) {
+    var publicKey;
     portacrypt.setup('user', 'adequately long passphrase').then(function() {
-      var publicKey = portacrypt.exportKey();
-      var box = portacrypt.box('test message', publicKey);
+      return portacrypt.exportKey();
+    }).then(function(key) {
+      publicKey = key;
+      expect(publicKey).toEqual(publicKeyStr);
+      return portacrypt.box('test message', publicKey);
+    }).then(function(box) {
       expect(box).toBeDefined();
       expect(typeof box).toEqual('string');
-      var message = portacrypt.open(box, publicKey);
+      return portacrypt.open(box, publicKey);
+    }).then(function(message) {
       expect(message).toEqual('test message');
+    }).catch(function(e) {
+      console.log(e.toString());
+      expect(false).toBeTruthy();
     }).then(done);
   });
 });

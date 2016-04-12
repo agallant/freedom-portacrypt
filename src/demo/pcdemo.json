@@ -1,0 +1,29 @@
+{
+  "name": "Portacrypt demo",
+  "description": "A demo to show Portacrypt usage",
+  "app": {
+    "script": "pcdemo.js",
+    "index": "main.html"
+  },
+  "provides": ["PCdemo"],
+  "default": "PCdemo",
+  "api": {
+    "PCdemo": {
+      "runDemo": {
+        "type": "method",
+        "value": [],
+        "ret": []
+      },
+      "print": {
+        "type": "event",
+        "value": "string"
+      }
+    }
+  },
+  "dependencies": {
+    "portacrypt": {
+      "url": "../freedom-portacrypt.json",
+      "api": "portacrypt"
+    }
+  }
+}

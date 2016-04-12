@@ -17,13 +17,12 @@ module.exports = function(config) {
     files: [
       'node_modules/es6-promise/dist/es6-promise.min.js',  // es6 promises
       'build/*.js',
-      'spec/*.js'
+      'spec/unit.spec.js'
     ],
 
     // list of files to exclude
     exclude: [
-      'build/freedom.js',
-      'build/googstorage.js'
+      'build/freedom.js'
     ],
 
     // preprocess matching files before serving them to the browser
@@ -52,7 +51,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'], //, 'Firefox'], re-enable FF after webworker crypto
+    browsers: ['Chrome'],//, 'Firefox'], // FF spins/times out, probably scrypt
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

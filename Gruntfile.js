@@ -5,6 +5,9 @@
 module.exports = function(grunt) {
   require('time-grunt')(grunt);
   require('jit-grunt')(grunt);
+  require('jit-grunt')(grunt, {
+    'npm-publish': 'grunt-npm'
+  });
 
   grunt.initConfig({
     copy: {
@@ -95,14 +98,17 @@ module.exports = function(grunt) {
       }
     },
 
-    // TODO make demo work in other freedom flavors (Chrome/FF/Node)
+    jasmine_nodejs: {
+      integration: { specs: ['spec/integration.spec.js']}
+    },
+
     connect: {
       demo: {
         options: {
           port: 8000,
           keepalive: true,
           base: ['./', 'build/'],
-          open: 'http://localhost:8000/build/'
+          open: 'http://localhost:8000/build/demo/main.html'
         }
       }
     },
@@ -116,12 +122,13 @@ module.exports = function(grunt) {
     'copy:freedom',
     'copy:scrypt',
     'copy:tweetnacl',
-    'copy:tweetnaclUtil',
+    'copy:tweetnaclUtil'
   ]);
   grunt.registerTask('test', [
     'build',
     'karma:browsers',
-    'karma:phantom'
+    'karma:phantom',
+    'jasmine_nodejs'
   ]);
   grunt.registerTask('dist', [
     'test',
