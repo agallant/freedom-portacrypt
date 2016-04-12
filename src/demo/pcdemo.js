@@ -21,16 +21,22 @@ PCdemo.prototype.runDemo = function() {
     publicKey = key;
     if (publicKey === publicKeyStr) {
       this.dispatch('print', 'Generated and exported correct public key!');
+    } else {
+      this.dispatch('print', 'ERROR: generated incorrect public key!');
     }
     return pc.box('test message', publicKey);
   }.bind(this)).then(function(box) {
     if (typeof box === 'string') {
       this.dispatch('print', 'Encrypted and signed (boxed) message...');
+    } else {
+      this.dispatch('print', 'ERROR: failed to encrypt/sign (box) message!');
     }
     return pc.open(box, publicKey);
   }.bind(this)).then(function(message) {
     if (message === 'test message') {
       this.dispatch('print', 'Authenticated and decrypted message correctly!');
+    } else {
+      this.dispatch('print', 'ERROR: failed to authenticate/decrypt message!');
     }
     this.dispatch('print', 'Portacrypt test COMPLETED.');
   }.bind(this)).catch(
@@ -38,7 +44,7 @@ PCdemo.prototype.runDemo = function() {
       if (e.message) {
         e = e.message;
       }
-      this.dispatch('print', 'Portacrypt test encountered error: ' + e);
+      this.dispatch('print', 'ERROR: ' + e);
     }.bind(this));
 };
 

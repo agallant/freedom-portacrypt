@@ -98,6 +98,22 @@ module.exports = function(grunt) {
       }
     },
 
+    jasmine_chromeapp: {
+      src: ['node_modules/freedom-for-chrome/freedom-for-chrome.*',
+            'spec/integration.spec.js', 'build/*.js*', 'build/demo/*'],
+      options: {
+        paths: ['node_modules/freedom-for-chrome/freedom-for-chrome.js',
+                'spec/integration.spec.js'],
+        keepRunner: false
+      }
+    },
+
+    jasmine_firefoxaddon: {
+      tests: ['spec/integration.spec.js'],
+      resources: ['build/*js*', 'build/demo/*'],
+      helpers: ['node_modules/freedom-for-firefox/freedom-for-firefox.jsm']
+    },
+
     jasmine_nodejs: {
       integration: { specs: ['spec/integration.spec.js']}
     },
@@ -113,7 +129,7 @@ module.exports = function(grunt) {
       }
     },
 
-    clean: ['build/', 'dist/']
+    clean: ['build/', '.build/', 'dist/']
   });
 
   grunt.registerTask('build', [
@@ -128,13 +144,15 @@ module.exports = function(grunt) {
     'build',
     'karma:browsers',
     'karma:phantom',
-    'jasmine_nodejs'
+    'jasmine_chromeapp',
+    //'jasmine_firefoxaddon',  // re-enable when webworkers support crypto
+    //'jasmine_nodejs'  // currently not passing, "self is not defined"
   ]);
   grunt.registerTask('dist', [
     'test',
     'copy:distManifest',
     'uglify'
-  ])
+  ]);
   grunt.registerTask('demo', [
     'build',
     'connect'
@@ -144,4 +162,4 @@ module.exports = function(grunt) {
     'karma:phantom'
   ]);
 
-}
+};
