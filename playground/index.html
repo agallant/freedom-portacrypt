@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>Portacrypt ~ freedom.js Demo</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <link href='style.css' rel='stylesheet' type='text/css' />
+
+  <!-- Load freedom.js -->
+  <script type="text/javascript" src="../freedom.js"></script>
+
+  <script type="text/javascript">
+  var start = function(Portacrypt) {
+    var pc = window.pc = new Portacrypt();
+    var input = document.getElementById('input');
+    var key = document.getElementById('key');
+    var output = document.getElementById('output');
+    var print = function(obj) {
+      if (typeof obj === "string") {
+        output.innerText = obj;
+      } else {
+        output.innerText = JSON.stringify(obj);
+      }
+    };
+    // Print sucessful output
+    var success = function(val) {
+      output.innerHTML = "<font color='green'>Success</font><br />";
+      if (typeof val !== 'undefined') {
+        output.innerHTML += val;
+      }
+    };
+
+    document.getElementById('setup').addEventListener('click', function() {
+      var text = input.value.split('\n');
+      if (text.length < 2) {
+        print("Input format should be:\n<userid>\n<passphrase>\n");
+      } else {
+        pc.setup(text[0], text[1]).then(success, print);
+      }
+    }, true);
+    document.getElementById('export').addEventListener('click', function() {
+      pc.exportKey().then(success, print);
+    }, true);
+    document.getElementById('encrypt').addEventListener('click', function() {
+      pc.box(input.value, key.value).then(success, print);
+    }, true);
+    document.getElementById('decrypt').addEventListener('click', function() {
+      pc.open(input.value, key.value).then(success, print);
+    }, true);
+  };
+
+  window.onload = function() {
+    freedom('../freedom-portacrypt.json', {
+      'debug': 'log'
+    }).then(start);
+  };
+  </script>
+</head>
+<body>
+  <header id='logo'>freedom.js</header>
+  <header><span class='triangle'>&#9654;</span> Demos</header>
+  <header><span class='triangle'>&#9654;</span> Portacrypt</header>
+  <section>
+    <textarea id="input" rows=10 cols=80>Message</textarea>
+    <textarea id="key" rows=10 cols=80>Key</textarea>
+    <br />
+    <input type="button" id="setup" value="Setup" />
+    <input type="button" id="export" value="ExportKey" />
+    <input type="button" id="encrypt" value="Encrypt/Sign (box)" />
+    <input type="button" id="decrypt" value="Authenticate/Decrypt (unbox)" />
+  </section>
+  <section>
+    <h3>Output</h3>
+    <pre id="output">
+    </pre>
+  </section>
+</body>
+</html>

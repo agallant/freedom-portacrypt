@@ -1,0 +1,69 @@
+{
+  "name": "PortaCrypt",
+  "description": "Passphrase based asymmetric crypto using scrypt and NaCl",
+  "app": {
+    "script": [
+      "scrypt-async.js",
+      "nacl-fast.js",
+      "nacl-util.js",
+      "freedom-portacrypt.js"
+    ]
+  },
+  "provides" : [
+    "portacrypt"
+  ],
+  "default": "portacrypt",
+  "api": {
+    "portacrypt": {
+      "_comment": "Passphrase-based cryptography interface",
+
+      "ERRCODE": { "type": "constant", "value": {
+        "KEYS_NOT_CREATED":   "No keys in memory - initialize first",
+        "SHORT_PASSPHRASE":   "Please use a longer passphrase",
+        "NO_USERID":          "Please specify a userid",
+        "ALREADY_SETUP":      "Keypair already in memory, please clear first",
+        "BAD_AUTHENTICATION": "Message authentication failed"
+      }},
+
+      "setup": {
+        "_comment": "Create a keypair based on userid and passphrase",
+        "type": "method",
+        "value": ["string", "string"],
+        "ret": [],
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "clear": {
+        "_comment": "Clear keypair from memory",
+        "type": "method",
+        "value": [],
+        "ret": [],
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "exportKey": {
+        "_comment": "Export public key",
+        "type": "method",
+        "value": [],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "box": {
+        "_comment": "Encrypt and authenticate message",
+        "type": "method",
+        "value": ["string", "string"],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "open": {
+        "_comment": "Authenticate and decrypt message",
+        "type": "method",
+        "value": ["string", "string"],
+        "ret": "string",
+        "err": { "errcode": "string", "message": "string" }
+      }
+    }
+  }
+}
