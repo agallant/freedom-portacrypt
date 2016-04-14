@@ -5,6 +5,7 @@
 module.exports = function(grunt) {
   require('time-grunt')(grunt);
   require('jit-grunt')(grunt, {
+    buildcontrol: 'grunt-build-control',
     'npm-publish': 'grunt-npm'
   });
 
@@ -50,9 +51,13 @@ module.exports = function(grunt) {
         expand: true,
         onlyIf: 'modified'
       },
-      distManifest: {
-        src: 'src/freedom-portacrypt.json',
-        dest: 'dist/freedom-portacrypt.json',
+      distNonJs: {
+        cwd: 'src/',
+        src: ['**', '!*.js'],
+        dest: 'dist/',
+        flatten: false,
+        filter: 'isFile',
+        expand: true,
         onlyIf: 'modified'
       }
     },
@@ -128,6 +133,22 @@ module.exports = function(grunt) {
       }
     },
 
+    buildcontrol: {
+      options: {
+        dir: 'dist/',
+        commit: true,
+        push: true,
+        message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
+          '%sourceBranch%'
+      },
+      pages: {
+        options: {
+          remote: 'https://github.com/soycode/freedom-portacrypt.git',
+          branch: 'gh-pages'
+        }
+      }
+    },
+
     clean: ['build/', '.build/', 'dist/']
   });
 
@@ -149,12 +170,16 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('dist', [
     'test',
-    'copy:distManifest',
-    'uglify'
+    'uglify',
+    'copy:distNonJs'
   ]);
   grunt.registerTask('demo', [
     'build',
     'connect'
+  ]);
+  grunt.registerTask('deploy', [
+    'dist',
+    'buildcontrol'
   ]);
   grunt.registerTask('default', [
     'build',
