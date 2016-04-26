@@ -20,7 +20,7 @@ describe('portacrypt', function () {
       console.log(portacrypt);  // shouldn't see this, should go to error case
       expect(false).toBeTruthy();
     }).catch(function(e) {
-      expect(e).toEqual(Error('No keys in memory - initialize first'));
+      expect(e).toEqual('No keys in memory - initialize first');
     }).then(done);
   });
 
@@ -29,7 +29,7 @@ describe('portacrypt', function () {
       console.log(portacrypt);  // shouldn't see this, should go to error case
       expect(false).toBeTruthy();
     }).catch(function(e) {
-      expect(e).toEqual(Error('Please use a longer passphrase'));
+      expect(e).toEqual('Please use a longer passphrase');
     }).then(done);
   });
 
@@ -38,7 +38,7 @@ describe('portacrypt', function () {
       console.log(portacrypt);  // shouldn't see this, should go to error case
       expect(false).toBeTruthy();
     }).catch(function(e) {
-      expect(e).toEqual(Error('Please specify a userid'));
+      expect(e).toEqual('Please specify a userid');
     }).then(done);
   });
 
@@ -62,7 +62,7 @@ describe('portacrypt', function () {
       console.log(portacrypt);  //shouldn't see this, should go to error case
       expect(false).toBeTruthy();
     }).catch(function(e) {
-      expect(e).toEqual(Error('Keypair already in memory, please clear first'));
+      expect(e).toEqual('Keypair already in memory, please clear first');
     }).then(done);
   });
 

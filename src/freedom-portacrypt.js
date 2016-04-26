@@ -8,15 +8,14 @@ var Portacrypt = function(dispatchEvents) {
 Portacrypt.prototype.setup = function(userid, passphrase) {
   'use strict';
   if (passphrase.length < 20) {
-    return Promise.reject(Error('Please use a longer passphrase'));
+    return Promise.reject('Please use a longer passphrase');
   }
   if (userid.length === 0) {
     // userid is also used as salt, so want to enforce having one
-    return Promise.reject(Error('Please specify a userid'));
+    return Promise.reject('Please specify a userid');
   }
   if (typeof this.keypair !== 'undefined') {
-    return Promise.reject(
-      Error('Keypair already in memory, please clear first'));
+    return Promise.reject('Keypair already in memory, please clear first');
   }
   this.userid = userid;
   var scope = this;
@@ -39,7 +38,7 @@ Portacrypt.prototype.clear = function() {
 Portacrypt.prototype.exportKey = function() {
   'use strict';
   if (!this.keypair) {
-    return Promise.reject(Error('No keys in memory - initialize first'));
+    return Promise.reject('No keys in memory - initialize first');
   }
   return Promise.resolve(nacl.util.encodeBase64(this.keypair.publicKey));
 };
@@ -47,7 +46,7 @@ Portacrypt.prototype.exportKey = function() {
 Portacrypt.prototype.box = function(message, receiverKey) {
   'use strict';
   if (!this.keypair) {
-    return Promise.reject(Error('No keys in memory - initialize first'));
+    return Promise.reject('No keys in memory - initialize first');
   }
   var nonce = nacl.randomBytes(nacl.box.nonceLength);
   var box = nacl.box(nacl.util.decodeBase64(btoa(message)), nonce,
@@ -60,7 +59,7 @@ Portacrypt.prototype.box = function(message, receiverKey) {
 Portacrypt.prototype.open = function(box, senderKey) {
   'use strict';
   if (!this.keypair) {
-    return Promise.reject(Error('No keys in memory - initialize first'));
+    return Promise.reject('No keys in memory - initialize first');
   }
   var bytes = nacl.util.decodeBase64(box);
   var message = nacl.box.open(
